@@ -1,0 +1,17 @@
+# .dockerignore
+.dockerignore
+Dockerfile
+.gradle/
+build/
+.env
+.idea/
+*.iml
+*.ipr
+*.iws
+*.log
+*.swp
+*.swo
+*.bak
+*.sublime*
+.DS_Store
+Thumbs.db

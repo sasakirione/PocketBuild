@@ -1,0 +1,14 @@
+ktor:
+  application:
+    modules:
+      - com.sasakirione.pokebuild.ApplicationKt.module
+  deployment:
+    port: 8080
+    frontPath: ${?FRONT_PATH}
+db:
+  url: ${?DB_PATH}
+  user: ${?DB_USER}
+  password: ${?DB_PASS}
+auth0:
+  issuer: ${?AUTH0_ISSUER}
+  secret: ${?AUTH0_SECRET}
