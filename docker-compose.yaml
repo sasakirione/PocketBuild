@@ -5,14 +5,21 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/pocket-build
+      - API_URL=http://pocket-build-backend:8080
+      - AUTH0_ISSUER=https://sasakirione.auth0.com/
+      - AUTH0_SECRET=secret
 
   pocket-build-backend:
     build: ./backend
     ports:
       - "8080:8080"
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/pocket-build
+      - DB_PATH=jdbc:postgresql://db:5432/pocket-build
+      - DB_USER=postgres
+      - DB_PASS=password
+      - AUTH0_ISSUER=https://sasakirione.auth0.com/
+      - AUTH0_SECRET=secret
+      - FRONT_PATH=http://localhost:3000
 
   pocket-build-db:
     image: postgres:13-alpine
