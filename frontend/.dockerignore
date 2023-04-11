@@ -1,0 +1,13 @@
+# .dockerignore
+.dockerignore
+Dockerfile
+node_modules/
+npm-debug.log
+yarn-error.log
+.cache/
+.next/
+out/
+*.log
+*.swp
+*.swo
+*.bak

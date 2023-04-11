@@ -1,0 +1,15 @@
+# エディタ/IDE 関連
+.vscode/
+.idea/workspace.xml
+.idea/tasks.xml
+*.swp
+*.swo
+*.bak
+*.tmp
+*.sublime*
+
+# OS 関連
+.DS_Store
+Thumbs.db
+
+db/data
