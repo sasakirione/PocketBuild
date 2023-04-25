@@ -4,8 +4,8 @@ import com.sasakirione.pokebuild.model.user.resource.UserPokemons
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.javatime.datetime
 
-object UserPokemonValue: IntIdTable("user_pokemon_values") {
-    val userPokemon = reference("user_pokemon_id", UserPokemons)
+object UserPokemonValues: IntIdTable("user_pokemon_values") {
+    val userPokemonId = reference("user_pokemon_id", UserPokemons)
     val evH = integer("ev_h").default(0)
     val evA = integer("ev_a").default(0)
     val evB = integer("ev_b").default(0)
