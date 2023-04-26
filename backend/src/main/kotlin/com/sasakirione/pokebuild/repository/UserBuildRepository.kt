@@ -151,4 +151,22 @@ class UserBuildRepository {
         val build = UserBuilds.select { UserBuilds.id eq buildId }.firstOrNull() ?: return false
         return build[UserBuilds.userId].value == userId
     }
+
+    /**
+     * ユーザーの構築IDリストを取得する
+     *
+     * @param userId ユーザーID
+     * @return 構築IDリスト
+     */
+    fun getBuildIdList(userId: Int): List<Int> {
+        // 削除済みも含めて全ての構築を取得する
+        val buildIdList = UserBuilds.select { UserBuilds.userId eq userId }.map { it[UserBuilds.id].value }
+
+        // 削除済みの構築を取得する
+        val deletedBuildIdList = DeletedUserBuilds.select { DeletedUserBuilds.userBuilds inList buildIdList }
+            .map { it[DeletedUserBuilds.userBuilds].value }
+
+        // 削除済みの構築を除いた構築IDリストを返す
+        return buildIdList.filter { it !in deletedBuildIdList }
+    }
 }

@@ -92,6 +92,61 @@ class UserPokemonRepository {
     }
 
     /**
+     * ユーザーのポケモンのニックネームを変更する
+     *
+     * @param nickname 変更するニックネーム
+     * @param pokemonId 変更するポケモンのID
+     */
+    fun updateNickname(nickname: String, pokemonId: Int) {
+        UserPokemonNickNames.insert {
+            it[nickName] = nickname
+            it[userPokemonId] = pokemonId
+            it[createdAt] = LocalDateTime.now(ZoneOffset.UTC)
+        }
+    }
+
+    /**
+     * ユーザーのポケモンのテラスタイプを変更する
+     *
+     * @param terasType 変更するテラスタイプ
+     * @param pokemonId 変更するポケモンのID
+     */
+    fun updateTerasType(terasType: Int, pokemonId: Int) {
+        UserPokemonTerasTypes.insert {
+            it[teraTypeId] = terasType
+            it[userPokemonId] = pokemonId
+            it[createdAt] = LocalDateTime.now(ZoneOffset.UTC)
+        }
+    }
+
+/**
+     * ユーザーのポケモンの努力値と個体値を変更する
+     *
+     * @param pokemonId 変更するポケモンのID
+     * @param ev 変更する努力値
+     * @param iv 変更する個体値
+     */
+    fun updateValue(ev: UserPokemonValue, iv: UserPokemonValue, pokemonId: Int) {
+        UserPokemonValues.insert {
+            it[evH] = ev.h
+            it[evA] = ev.a
+            it[evB] = ev.b
+            it[evC] = ev.c
+            it[evD] = ev.d
+            it[evS] = ev.s
+            it[ivH] = iv.h
+            it[ivA] = iv.a
+            it[ivB] = iv.b
+            it[ivC] = iv.c
+            it[ivD] = iv.d
+            it[ivS] = iv.s
+            it[userPokemonId] = pokemonId
+            it[createdAt] = LocalDateTime.now(ZoneOffset.UTC)
+        }
+    }
+
+
+    /**
      * ユーザーのポケモンを取得する
      *
      * @param pokemonId 取得するポケモンのID
@@ -240,6 +295,10 @@ class UserPokemonRepository {
         }
         return pokemonId.value
     }
+
+    fun getPokemonList(userId: Int): List<UserPokemon> =
+        UserPokemons.select { UserPokemons.userId eq userId }
+            .mapNotNull { getPokemon(it[UserPokemons.id].value, userId) }
 
     /**
      * 選択されたポケモンがユーザーのポケモンか判定する
