@@ -240,4 +240,16 @@ class UserPokemonRepository {
         }
         return pokemonId.value
     }
+
+    /**
+     * 選択されたポケモンがユーザーのポケモンか判定する
+     *
+     * @param pokemonId ポケモンID
+     * @param userId ユーザーID
+     *
+     * @return ユーザーのポケモンならtrue(ポケモンが存在しない、または別のユーザーのものの場合はfalse)
+     */
+    fun isCreatedPokemon(pokemonId: Int, userId: Int): Boolean {
+        return UserPokemons.select { (UserPokemons.id eq pokemonId) and (UserPokemons.userId eq userId) }.count() > 0
+    }
 }
