@@ -11,7 +11,10 @@ import org.jetbrains.exposed.sql.select
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-class PokemonBuildRepository {
+/**
+ * ユーザーのポケモンに関するリポジトリ
+ */
+class UserPokemonRepository {
     /**
      * ユーザーのポケモンの特性を変更する
      *
@@ -95,8 +98,16 @@ class PokemonBuildRepository {
      * @param userId 取得するポケモンのユーザーID
      * @return ユーザーのポケモン
      */
-    fun getPokemon(pokemonId: Int, userId: Int): UserPokemon {
-        val pokemonSeedId = UserPokemons.select { UserPokemons.id eq pokemonId }.first()[UserPokemons.pokemonId]
+    fun getPokemon(pokemonId: Int, userId: Int): UserPokemon? {
+        val isDeleted = DeletedUserPokemons.select { DeletedUserPokemons.id eq pokemonId }.count() != 0L
+        if (isDeleted) {
+            return null
+        }
+        val pokemon = UserPokemons.select { UserPokemons.id eq pokemonId }.firstOrNull() ?: return null
+        val pokemonSeedId = pokemon[UserPokemons.pokemonId]
+        if (pokemon[UserPokemons.userId].value != userId) {
+            return null
+        }
         val abilityId = UserPokemonAbilities.select { UserPokemonAbilities.userPokemonId eq pokemonId }
             .orderBy(UserPokemonAbilities.createdAt, SortOrder.DESC)
             .first()[UserPokemonAbilities.abilityId]
