@@ -10,6 +10,7 @@ fun Application.module() {
     configureSecurity()
     configureHTTP()
     configureSerialization()
+    // DBの設定とマイグレーション用のコード
     configureDatabases()
     configureRouting()
 }
