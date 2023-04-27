@@ -2,6 +2,7 @@ package com.sasakirione.pokebuild.plugins
 
 import com.sasakirione.pokebuild.controller.UserPokemonController
 import com.sasakirione.pokebuild.domain.UserPokemon
+import com.sasakirione.pokebuild.domain.UserPokemonValue
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -102,8 +103,27 @@ fun Route.pokemonRouting() {
             val terasType = call.receive<Int>()
             pokemonController.updateTerasType(id, terasType, authId)
         }
+
+        put("move") {
+            val authId = getAuthId()
+            val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
+            val move = call.receive<List<Int>>()
+            pokemonController.updateMoves(id, move, authId)
+        }
+
+        put("value") {
+            val authId = getAuthId()
+            val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
+            val value = call.receive<PokemonValueRequest>()
+            pokemonController.updateValue(id, value.ev, value.iv, authId)
+        }
     }
 }
+
+data class PokemonValueRequest(
+    val ev: UserPokemonValue,
+    val iv: UserPokemonValue,
+)
 
 private fun PipelineContext<Unit, ApplicationCall>.getAuthId(): String {
     val principal = call.authentication.principal<JWTPrincipal>()

@@ -2,7 +2,6 @@ package com.sasakirione.pokebuild.controller
 
 import com.sasakirione.pokebuild.domain.UserPokemon
 import com.sasakirione.pokebuild.domain.UserPokemonValue
-import com.sasakirione.pokebuild.repository.UserBuildRepository
 import com.sasakirione.pokebuild.repository.UserPokemonRepository
 import com.sasakirione.pokebuild.repository.UserRepository
 import io.ktor.server.plugins.*
@@ -10,9 +9,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class UserPokemonController: KoinComponent {
+class UserPokemonController : KoinComponent {
     private val pokemonRepo: UserPokemonRepository by inject()
-    private val buildRepo: UserBuildRepository by inject()
     private val userRepo: UserRepository by inject()
 
     fun getUserPokemon(pokemonId: Int, authId: String): UserPokemon = transaction {
@@ -106,6 +104,4 @@ class UserPokemonController: KoinComponent {
             throw NotFoundException()
         }
     }
-
-
 }

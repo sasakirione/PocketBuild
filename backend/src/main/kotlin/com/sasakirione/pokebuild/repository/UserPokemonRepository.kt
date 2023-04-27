@@ -119,7 +119,7 @@ class UserPokemonRepository {
         }
     }
 
-/**
+    /**
      * ユーザーのポケモンの努力値と個体値を変更する
      *
      * @param pokemonId 変更するポケモンのID
