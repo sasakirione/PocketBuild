@@ -1,6 +1,8 @@
 package com.sasakirione.pokebuild.plugins
 
+import com.sasakirione.pokebuild.controller.UserBuildController
 import com.sasakirione.pokebuild.controller.UserPokemonController
+import com.sasakirione.pokebuild.domain.UserBuild
 import com.sasakirione.pokebuild.domain.UserPokemon
 import com.sasakirione.pokebuild.domain.UserPokemonValue
 import io.ktor.http.*
@@ -18,10 +20,10 @@ fun Application.configureRouting() {
     routing {
         route("/v1") {
             authenticate {
-                route("pokemon") {
+                route("pokemons") {
                     pokemonRouting()
                 }
-                route("build") {
+                route("builds") {
                     buildRouting()
                 }
             }
@@ -34,88 +36,88 @@ fun Route.pokemonRouting() {
 
     get {
         val authId = getAuthId()
-        pokemonController.getUserPokemonList(authId)
+        call.respond(pokemonController.getUserPokemonList(authId))
     }
 
     post {
         val authId = getAuthId()
         val pokemon = call.receive<UserPokemon>()
-        pokemonController.createUserPokemon(pokemon, authId)
+        call.respond(pokemonController.createUserPokemon(pokemon, authId))
     }
 
     route("{id}") {
         get {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
-            pokemonController.getUserPokemon(id, authId)
+            call.respond(pokemonController.getUserPokemon(id, authId))
         }
 
         put {
             val authId = getAuthId()
             val pokemon = call.receive<UserPokemon>()
-            pokemonController.updatePokemon(pokemon, authId)
+            call.respond(pokemonController.updatePokemon(pokemon, authId))
         }
 
         delete {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            pokemonController.deletePokemon(id, authId)
+            call.respond(pokemonController.deletePokemon(id, authId))
         }
 
         put("ability") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val abilityId = call.receive<Int>()
-            pokemonController.updateAbility(id, abilityId, authId)
+            call.respond(pokemonController.updateAbility(id, abilityId, authId))
         }
 
         put("nature") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val natureId = call.receive<Int>()
-            pokemonController.updateNature(id, natureId, authId)
+            call.respond(pokemonController.updateNature(id, natureId, authId))
         }
 
         put("good") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val goodId = call.receive<Int>()
-            pokemonController.updateGood(id, goodId, authId)
+            call.respond(pokemonController.updateGood(id, goodId, authId))
         }
 
         put("tags") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val tags = call.receive<List<Int>>()
-            pokemonController.updateTags(id, tags, authId)
+            call.respond(pokemonController.updateTags(id, tags, authId))
         }
 
         put("nickName") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val nickName = call.receive<String>()
-            pokemonController.updateNickname(id, nickName, authId)
+            call.respond(pokemonController.updateNickname(id, nickName, authId))
         }
 
         put("teras-type") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val terasType = call.receive<Int>()
-            pokemonController.updateTerasType(id, terasType, authId)
+            call.respond(pokemonController.updateTerasType(id, terasType, authId))
         }
 
         put("move") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val move = call.receive<List<Int>>()
-            pokemonController.updateMoves(id, move, authId)
+            call.respond(pokemonController.updateMoves(id, move, authId))
         }
 
         put("value") {
             val authId = getAuthId()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@put call.respond(HttpStatusCode.BadRequest)
             val value = call.receive<PokemonValueRequest>()
-            pokemonController.updateValue(id, value.ev, value.iv, authId)
+            call.respond(pokemonController.updateValue(id, value.ev, value.iv, authId))
         }
     }
 }
@@ -130,6 +132,58 @@ private fun PipelineContext<Unit, ApplicationCall>.getAuthId(): String {
     return principal?.payload?.getClaim("sub")?.asString() ?: throw NotFoundException("認証情報がありません")
 }
 
-fun buildRouting() {
+fun Route.buildRouting() {
+    val buildController: UserBuildController by inject()
 
+    get {
+        val authId = getAuthId()
+        call.respond(buildController.getUserBuildList(authId))
+    }
+
+    post {
+        val build = call.receive<UserBuild>()
+        call.respond(buildController.createUserBuild(build))
+    }
+
+    route("{id}") {
+        get {
+            val authId = getAuthId()
+            val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+            call.respond(buildController.getUserBuild(id, authId))
+        }
+
+        put {
+            val authId = getAuthId()
+            val build = call.receive<UserBuild>()
+            call.respond(buildController.updateUserBuild(build, authId))
+        }
+
+        delete {
+            val authId = getAuthId()
+            val id = call.parameters["id"]?.toIntOrNull() ?: return@delete call.respond(HttpStatusCode.BadRequest)
+            call.respond(buildController.deleteUserBuild(id, authId))
+        }
+
+        route("pokemons") {
+            get {
+                val authId = getAuthId()
+                val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                call.respond(buildController.getUserBuildPokemonList(id, authId))
+            }
+            route("/{pokemonId}") {
+                post {
+                    val authId = getAuthId()
+                    val buildId = call.parameters["id"]?.toIntOrNull() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    val pokemonId = call.parameters["pokemonId"]?.toIntOrNull() ?: return@post call.respond(HttpStatusCode.BadRequest)
+                    call.respond(buildController.addUserBuildPokemon(buildId, pokemonId, authId))
+                }
+                delete {
+                    val authId = getAuthId()
+                    val buildId = call.parameters["id"]?.toIntOrNull() ?: return@delete call.respond(HttpStatusCode.BadRequest)
+                    val pokemonId = call.parameters["pokemonId"]?.toIntOrNull() ?: return@delete call.respond(HttpStatusCode.BadRequest)
+                    call.respond(buildController.deleteUserBuildPokemon(buildId, pokemonId, authId))
+                }
+            }
+        }
+    }
 }
