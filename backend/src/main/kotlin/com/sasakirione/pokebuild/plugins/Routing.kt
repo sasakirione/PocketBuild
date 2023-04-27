@@ -16,6 +16,9 @@ import io.ktor.server.routing.*
 import io.ktor.util.pipeline.*
 import org.koin.ktor.ext.inject
 
+/**
+ * ルーティングの設定
+ */
 fun Application.configureRouting() {
     routing {
         route("/v1") {
@@ -31,6 +34,9 @@ fun Application.configureRouting() {
     }
 }
 
+/**
+ * ユーザーのポケモンに関するルーティング
+ */
 fun Route.pokemonRouting() {
     val pokemonController: UserPokemonController by inject()
 
@@ -122,16 +128,9 @@ fun Route.pokemonRouting() {
     }
 }
 
-data class PokemonValueRequest(
-    val ev: UserPokemonValue,
-    val iv: UserPokemonValue,
-)
-
-private fun PipelineContext<Unit, ApplicationCall>.getAuthId(): String {
-    val principal = call.authentication.principal<JWTPrincipal>()
-    return principal?.payload?.getClaim("sub")?.asString() ?: throw NotFoundException("認証情報がありません")
-}
-
+/**
+ * ユーザーの構築に関するルーティング
+ */
 fun Route.buildRouting() {
     val buildController: UserBuildController by inject()
 
@@ -187,3 +186,22 @@ fun Route.buildRouting() {
         }
     }
 }
+
+/**
+ * ユーザーのポケモンの個体値を更新する際のリクエストボディ
+ */
+data class PokemonValueRequest(
+    val ev: UserPokemonValue,
+    val iv: UserPokemonValue,
+)
+
+/**
+ * 認証情報からユーザーAuthIDを取得する
+ *
+ * @return ユーザーAuthID
+ */
+private fun PipelineContext<Unit, ApplicationCall>.getAuthId(): String {
+    val principal = call.authentication.principal<JWTPrincipal>()
+    return principal?.payload?.getClaim("sub")?.asString() ?: throw NotFoundException("認証情報がありません")
+}
+
