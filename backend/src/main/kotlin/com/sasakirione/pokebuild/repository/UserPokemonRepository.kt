@@ -296,9 +296,27 @@ class UserPokemonRepository {
         return pokemonId.value
     }
 
-    fun getPokemonList(userId: Int): List<UserPokemon> =
-        UserPokemons.select { UserPokemons.userId eq userId }
-            .mapNotNull { getPokemon(it[UserPokemons.id].value, userId) }
+    /**
+     * ユーザーのポケモン一覧を取得する
+     *
+     * @param userId ユーザーID
+     * @return ユーザーのポケモン一覧
+     */
+    fun getPokemonList(userId: Int): List<UserPokemon> {
+        // 削除済みを含めて一覧を取得する
+        val pokemonIds = UserPokemons.select { UserPokemons.userId eq userId }
+            .map { it[UserPokemons.id] }
+
+        // 削除済みのポケモンを取得する
+        val deletedPokemonIds = DeletedUserPokemons.select { DeletedUserPokemons.userPokemons inList pokemonIds }
+            .map { it[DeletedUserPokemons.userPokemons] }
+
+        // 削除済みのポケモンを除外する
+        val filteredPokemonIds = pokemonIds.filter { !deletedPokemonIds.contains(it) }
+
+        // ポケモンを取得する
+        return filteredPokemonIds.mapNotNull { getPokemon(it.value, userId) }
+    }
 
     /**
      * 選択されたポケモンがユーザーのポケモンか判定する
@@ -310,5 +328,16 @@ class UserPokemonRepository {
      */
     fun isCreatedPokemon(pokemonId: Int, userId: Int): Boolean {
         return UserPokemons.select { (UserPokemons.id eq pokemonId) and (UserPokemons.userId eq userId) }.count() > 0
+    }
+
+    /**
+     * ポケモンを削除する
+     *
+     * @param pokemonId 削除するポケモンのID
+     */
+    fun deletePokemon(pokemonId: Int) {
+        DeletedUserPokemons.insert {
+            it[userPokemons] = pokemonId
+        }
     }
 }
