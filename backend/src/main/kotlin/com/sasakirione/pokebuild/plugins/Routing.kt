@@ -1,5 +1,6 @@
 package com.sasakirione.pokebuild.plugins
 
+import com.sasakirione.pokebuild.controller.DataController
 import com.sasakirione.pokebuild.controller.UserBuildController
 import com.sasakirione.pokebuild.controller.UserPokemonController
 import com.sasakirione.pokebuild.domain.UserBuild
@@ -29,6 +30,9 @@ fun Application.configureRouting() {
                 route("builds") {
                     buildRouting()
                 }
+            }
+            route("data") {
+                dataRouting()
             }
         }
     }
@@ -182,6 +186,88 @@ fun Route.buildRouting() {
                     val pokemonId = call.parameters["pokemonId"]?.toIntOrNull() ?: return@delete call.respond(HttpStatusCode.BadRequest)
                     call.respond(buildController.deleteUserBuildPokemon(buildId, pokemonId, authId))
                 }
+            }
+        }
+    }
+}
+
+/**
+ * ポケモンのデータに関するルーティング
+ */
+fun Route.dataRouting() {
+    val dataController: DataController by inject()
+    route("{generation}") {
+        route("pokemon") {
+            get {
+                call.respond(dataController.getPokemonList())
+            }
+            route("{id}") {
+                get {
+                    val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    call.respond(dataController.getPokemon(id, generation))
+                }
+
+                get("ability") {
+                    val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    call.respond(dataController.getPokemonAbility(id, generation))
+                }
+
+                get("moves") {
+                    val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    call.respond(dataController.getPokemonMoves(id, generation))
+                }
+            }
+        }
+        route("goods") {
+            get {
+                val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                call.respond(dataController.getGoodsList(generation))
+            }
+            route("{id}") {
+                get {
+                    val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    call.respond(dataController.getGoods(id, generation))
+                }
+            }
+        }
+        route("abilities") {
+            get {
+                val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                call.respond(dataController.getAbilityList(generation))
+            }
+            route("{id}") {
+                get {
+                    val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    call.respond(dataController.getAbility(id, generation))
+                }
+            }
+        }
+        route("moves") {
+            get {
+                val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                call.respond(dataController.getMoveList(generation))
+            }
+            route("{id}") {
+                get {
+                    val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    val generation = call.parameters["generation"]?.toIntOrNull() ?: return@get call.respond(HttpStatusCode.BadRequest)
+                    call.respond(dataController.getMove(id, generation))
+                }
+            }
+        }
+        route("tags") {
+            get {
+                call.respond(dataController.getTagList())
+            }
+        }
+        route("natures") {
+            get {
+                call.respond(dataController.getNatureList())
             }
         }
     }

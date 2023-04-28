@@ -6,4 +6,5 @@ object Moves: IntIdTable("moves") {
     val name = varchar("name", 10).uniqueIndex()
     val type = reference("type", Types)
     val category = reference("category", MoveCategories)
+    val generation = integer("generation")
 }
