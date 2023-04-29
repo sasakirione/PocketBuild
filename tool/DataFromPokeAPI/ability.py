@@ -23,4 +23,4 @@ def save_ability_english_name():
             name = ability_names.get(ability_id)
             if name is None:
                 continue
-            open("abilities.csv", "a", encoding="utf8").write(f"{name},{generation_id}\n")
+            open("abilities.csv", "a", encoding="utf8").write(f"{ability_id},{name},{generation_id}\n")
