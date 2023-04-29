@@ -19,7 +19,7 @@ def save_ability_english_name():
         for row in reader:
             ability_id, identifier, generation_id, is_main_series = row
             if is_main_series == "0":
-                continu
+                continue
             name = ability_names.get(ability_id)
             if name is None:
                 continue
