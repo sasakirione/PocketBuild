@@ -1006,3 +1006,5 @@ INSERT INTO Pkemons (id, dex_no, form_no, name, form_name, generation) VALUES (1
 INSERT INTO Pkemons (id, dex_no, form_no, name, form_name, generation) VALUES (1006, '1006', 1, 'テツノブジン', '', 9);
 INSERT INTO Pkemons (id, dex_no, form_no, name, form_name, generation) VALUES (1007, '1007', 1, 'コライドン', '', 9);
 INSERT INTO Pkemons (id, dex_no, form_no, name, form_name, generation) VALUES (1008, '1008', 1, 'ミライドン', '', 9);
+INSERT INTO Pkemons (id, dex_no, form_no, name, form_name, generation) VALUES (1009, '1009', 1, 'ウネルミナモ', '', 9);
+INSERT INTO Pkemons (id, dex_no, form_no, name, form_name, generation) VALUES (1010, '1010', 1, 'テツノイサハ', '', 9);
